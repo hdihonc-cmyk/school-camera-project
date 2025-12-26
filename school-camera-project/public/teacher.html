@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Camera Project - Student Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1000px;
+            overflow: hidden;
+            margin: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s;
+        }
+        
+        .step:hover {
+            transform: translateX(5px);
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .step h2 {
+            display: inline;
+            color: #333;
+        }
+        
+        .consent-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .consent-item {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .consent-item:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .warning-box h3 {
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .camera-section {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .camera-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        #videoElement {
+            width: 100%;
+            background: #000;
+            display: block;
+            transform: scaleX(-1); /* Mirror effect for front camera */
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #607d8b 0%, #37474f 100%);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800 0%, #ef6c00 100%);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .capture-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .capture-btn:hover {
+            background: #388e3c;
+            transform: scale(1.1);
+        }
+        
+        .capture-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .capture-btn.recording {
+            background: #f44336;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(244, 67, 54, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+        }
+        
+        .preview-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+        
+        .preview-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .preview-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            position: relative;
+        }
+        
+        .preview-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .preview-item img, .preview-item video {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .preview-item .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(244, 67, 54, 0.9);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .preview-item:hover .delete-btn {
+            display: block;
+        }
+        
+        .upload-section {
+            background: #e8f5e9;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 40px;
+            display: none;
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+            font-weight: bold;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: #f8f9fa;
+            color: #666;
+            font-size: 0.95rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f44336;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-media {
+            max-width: 100%;
+            max-height: 70vh;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .preview-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .preview-gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.7rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <span>📷</span>
+                School Camera Project
+                <span>🎓</span>
+            </h1>
+            <p>Educational Technology Assignment</p>
+            <p>Computer Science Department</p>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Step 1: Introduction -->
+            <div class="step" id="step1">
+                <span class="step-number">1</span>
+                <h2>Project Introduction</h2>
+                <div style="margin-top: 20px;">
+                    <p>Welcome to our educational camera project! This system allows you to:</p>
+                    <ul style="margin: 15px 0 15px 30px;">
+                        <li>Take photos using your device camera</li>
+                        <li>Record short videos for educational purposes</li>
+                        <li>Upload media for project evaluation</li>
+                        <li>Learn about web technologies and privacy</li>
+                    </ul>
+                    <p><strong>Purpose:</strong> This project demonstrates how web applications can securely access camera devices with user consent.</p>
+                </div>
+                <button class="btn" onclick="nextStep(2)" style="margin-top: 20px;">
+                    Next: Consent Information →
+                </button>
+            </div>
+            
+            <!-- Step 2: Consent -->
+            <div class="step" id="step2" style="display: none;">
+                <span class="step-number">2</span>
+                <h2>Consent & Privacy Information</h2>
+                
+                <div class="consent-box">
+                    <h3>✅ By participating, you agree to:</h3>
+                    <div class="consent-item">
+                        Use your camera ONLY for this educational project
+                    </div>
+                    <div class="consent-item">
+                        Upload media that you create specifically for this assignment
+                    </div>
+                    <div class="consent-item">
+                        Allow the teacher to access uploaded files for evaluation
+                    </div>
+                    <div class="consent-item">
+                        Understand that files will be deleted after project assessment
+                    </div>
+                </div>
+                
+                <div class="warning-box">
+                    <h3>⚠️ Important Privacy Notice</h3>
+                    <p><strong>We respect your privacy:</strong></p>
+                    <ul style="margin: 10px 0 10px 20px;">
+                        <li>Camera access is requested explicitly - you can deny it</li>
+                        <li>All uploads require your active consent</li>
+                        <li>Files are stored securely and accessed only by the teacher</li>
+                        <li>You can request deletion of your files at any time</li>
+                        <li>No secret recording or unauthorized access</li>
+                    </ul>
+                </div>
+                
+                <div style="margin: 25px 0;">
+                    <label style="display: flex; align-items: center; gap: 10px; font-size: 1.1rem;">
+                        <input type="checkbox" id="agreeConsent" onchange="toggleConsent()" style="width: 20px; height: 20px;">
+                        <span>I have read and agree to the terms above. I consent to participate in this educational project.</span>
+                    </label>
+                </div>
+                
+                <div>
+                    <button class="btn" onclick="previousStep(1)" style="margin-right: 10px;">
+                        ← Back
+                    </button>
+                    <button class="btn btn-success" id="startCameraBtn" onclick="startCameraAccess()" disabled>
+                        ✅ I Consent - Start Camera
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Camera Interface -->
+            <div class="camera-section" id="step3">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="color: #667eea; margin-bottom: 10px;">🎥 Camera Interface</h2>
+                    <p>Your camera is ready for educational use</p>
+                    <p style="font-size: 0.9rem; color: #666; margin-top: 5px;">
+                        Session ID: <span id="sessionIdDisplay" style="font-family: monospace; background: #f0f0f0; padding: 2px 8px; border-radius: 4px;"></span>
+                    </p>
+                </div>
+                
+                <!-- Camera Preview -->
+                <div class="camera-container">
+                    <video id="videoElement" autoplay playsinline></video>
+                </div>
+                
+                <!-- Camera Controls -->
+                <div style="text-align: center; margin: 30px 0;">
+                    <div class="controls">
+                        <button class="btn" id="capturePhotoBtn">
+                            <span>📸</span> Take Photo
+                        </button>
+                        <button class="btn" id="startRecordBtn">
+                            <span>●</span> Start Recording
+                        </button>
+                        <button class="btn btn-danger" id="stopRecordBtn" style="display: none;">
+                            <span>⬛</span> Stop Recording
+                        </button>
+                        <button class="btn btn-secondary" id="switchCameraBtn">
+                            <span>🔄</span> Switch Camera
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <button class="capture-btn" id="quickCaptureBtn" title="Quick capture (Spacebar)">
+                            📸
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Recording Timer -->
+                <div id="recordingTimer" style="text-align: center; margin: 20px 0; display: none;">
+                    <div style="font-size: 1.5rem; color: #f44336; font-weight: bold;">
+                        ⏱️ Recording: <span id="timerDisplay">00:00</span>
+                    </div>
+                </div>
+                
+                <!-- Local Preview Gallery -->
+                <div class="preview-section">
+                    <h3 style="color: #333; margin-bottom: 20px;">📁 Your Media (Local Preview)</h3>
+                    <div class="preview-gallery" id="localGallery">
+                        <!-- Media previews will appear here -->
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-secondary" onclick="clearLocalGallery()">
+                            🗑️ Clear All Local Media
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Upload Section -->
+                <div class="upload-section" id="uploadSection">
+                    <h3 style="color: #333; margin-bottom: 20px;">📤 Upload for Evaluation</h3>
+                    <p>Select which media to submit for your project evaluation:</p>
+                    
+                    <div id="uploadQueue" style="margin: 20px 0;">
+                        <!-- Upload checklist will appear here -->
+                    </div>
+                    
+                    <div class="progress-bar" id="uploadProgressBar">
+                        <div class="progress-fill" id="uploadProgressFill"></div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="btn btn-success" onclick="uploadSelectedMedia()" id="uploadBtn">
+                            📤 Upload Selected to Teacher
+                        </button>
+                        <button class="btn btn-secondary" onclick="selectAllMedia()" style="margin-left: 10px;">
+                            ✅ Select All
+                        </button>
+                    </div>
+                    
+                    <!-- Status Messages -->
+                    <div class="status-message" id="statusMessage"></div>
+                </div>
+                
+                <!-- Navigation -->
+                <div style="text-align: center; margin-top: 40px;">
+                    <button class="btn btn-warning" onclick="showConsentAgain()">
+                        ⚠️ Review Consent Again
+                    </button>
+                    <button class="btn" onclick="resetToStart()" style="margin-left: 10px;">
+                        🏠 Back to Start
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Educational Project • School Assignment • Privacy-First Implementation</p>
+            <p>All camera access requires explicit user consent • Media is uploaded only with permission</p>
+            <p>For educational purposes only • Computer Science Department</p>
+        </div>
+    </div>
+    
+    <!-- Modal for viewing media -->
+    <div class="modal" id="mediaModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <div id="modalMedia"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // STUDENT INTERFACE - MAIN SCRIPT
+        // ============================================
+        
+        // Global variables
+        let mediaStream = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+        let recordingTimer = null;
+        let recordingSeconds = 0;
+        let currentSessionId = null;
+        let userMedia = [];
+        let currentCameraIndex = 0;
+        let availableCameras = [];
+        
+        // DOM Elements
+        const videoElement = document.getElementById('videoElement');
+        const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+        const startRecordBtn = document.getElementById('startRecordBtn');
+        const stopRecordBtn = document.getElementById('stopRecordBtn');
+        const quickCaptureBtn = document.getElementById('quickCaptureBtn');
+        const switchCameraBtn = document.getElementById('switchCameraBtn');
+        const recordingTimerDiv = document.getElementById('recordingTimer');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const localGallery = document.getElementById('localGallery');
+        const uploadSection = document.getElementById('uploadSection');
+        const uploadQueue = document.getElementById('uploadQueue');
+        const uploadProgressBar = document.getElementById('uploadProgressBar');
+        const uploadProgressFill = document.getElementById('uploadProgressFill');
+        const statusMessage = document.getElementById('statusMessage');
+        const sessionIdDisplay = document.getElementById('sessionIdDisplay');
+        
+        // ========== STEP NAVIGATION ==========
+        function nextStep(stepNumber) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.style.display = 'none';
+            });
+            
+            // Show target step
+            document.getElementById(`step${stepNumber}`).style.display = 'block';
+        }
+        
+        function previousStep(stepNumber) {
+            nextStep(stepNumber);
+        }
+        
+        function toggleConsent() {
+            const consentCheckbox = document.getElementById('agreeConsent');
+            const startCameraBtn = document.getElementById('startCameraBtn');
+            startCameraBtn.disabled = !consentCheckbox.checked;
+        }
+        
+        // ========== SESSION MANAGEMENT ==========
+        async function initializeSession() {
+            try {
+                const response = await fetch('/api/session');
+                const data = await response.json();
+                currentSessionId = data.sessionId;
+                sessionIdDisplay.textContent = currentSessionId;
+                
+                console.log('Session initialized:', currentSessionId);
+            } catch (error) {
+                console.error('Error initializing session:', error);
+                // Generate local session ID
+                currentSessionId = 'local_session_' + Date.now();
+                sessionIdDisplay.textContent = currentSessionId + ' (offline)';
+            }
+        }
+        
+        // ========== CAMERA FUNCTIONS ==========
+        async function startCameraAccess() {
+            try {
+                // Initialize session first
+                await initializeSession();
+                
+                // Request camera access
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user'
+                    },
+                    audio: true
+                });
+                
+                // Apply stream to video element
+                videoElement.srcObject = mediaStream;
+                
+                // Get available cameras
+                await getAvailableCameras();
+                
+                // Show camera interface
+                document.getElementById('step2').style.display = 'none';
+                document.getElementById('step3').style.display = 'block';
+                uploadSection.style.display = 'block';
+                
+                // Set up event listeners
+                setupCameraControls();
+                
+                // Show success message
+                showStatus('Camera access granted! You can now take photos and record videos.', 'success');
+                
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                
+                let errorMessage = 'Could not access camera. ';
+                
+                if (error.name === 'NotAllowedError') {
+                    errorMessage += 'Permission was denied. Please allow camera access in your browser settings.';
+                } else if (error.name === 'NotFoundError') {
+                    errorMessage += 'No camera found on your device.';
+                } else if (error.name === 'NotReadableError') {
+                    errorMessage += 'Camera is already in use by another application.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showStatus(errorMessage, 'error');
+                alert(errorMessage);
+                
+                // Still show camera interface but without camera
+                document.getElementById('step2').style.display = 'none';
+                document.getElementById('step3').style.display = 'block';
+            }
+        }
+        
+        async function getAvailableCameras() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                availableCameras = devices.filter(device => device.kind === 'videoinput');
+                
+                if (availableCameras.length > 1) {
+                    switchCameraBtn.style.display = 'inline-block';
+                } else {
+                    switchCameraBtn.style.display = 'none';
+                }
+                
+                console.log(`Found ${availableCameras.length} camera(s)`);
+            } catch (error) {
+                console.error('Error getting cameras:', error);
+            }
+        }
+        
+        async function switchCamera() {
+            if (availableCameras.length <= 1) return;
+            
+            // Stop current stream
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            
+            // Switch to next camera
+            currentCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
+            const nextCamera = availableCameras[currentCameraIndex];
+            
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        deviceId: { exact: nextCamera.deviceId },
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: true
+                });
+                
+                videoElement.srcObject = mediaStream;
+                showStatus(`Switched to ${nextCamera.label || 'Camera ' + (currentCameraIndex + 1)}`, 'success');
+                
+            } catch (error) {
+                console.error('Error switching camera:', error);
+                showStatus('Error switching camera', 'error');
+            }
+        }
+        
+        function setupCameraControls() {
+            // Capture Photo
+            capturePhotoBtn.onclick = capturePhoto;
+            quickCaptureBtn.onclick = capturePhoto;
+            
+            // Start Recording
+            startRecordBtn.onclick = startRecording;
+            
+            // Stop Recording
+            stopRecordBtn.onclick = stopRecording;
+            
+            // Switch Camera
+            switchCameraBtn.onclick = switchCamera;
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+        }
+        
+        function handleKeyboardShortcuts(e) {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            switch(e.key) {
+                case ' ': // Spacebar - capture photo
+                    e.preventDefault();
+                    capturePhoto();
+                    break;
+                case 'r': // R - start/stop recording
+                    e.preventDefault();
+                    if (isRecording) {
+                        stopRecording();
+                    } else {
+                        startRecording();
+                    }
+                    break;
+                case 'c': // C - switch camera
+                    e.preventDefault();
+                    switchCamera();
+                    break;
+                case 'Escape': // Esc - close modal
+                    if (document.getElementById('mediaModal').style.display === 'flex') {
+                        closeModal();
+                    }
+                    break;
+            }
+        }
+        
+        // ========== MEDIA CAPTURE ==========
+        function capturePhoto() {
+            if (!mediaStream) {
+                showStatus('Camera not available. Please grant camera access first.', 'error');
+                return;
+            }
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            
+            const context = canvas.getContext('2d');
+            
+            // Mirror the image if using front camera
+            if (currentCameraIndex === 0) { // Assuming index 0 is front camera
+                context.translate(canvas.width, 0);
+                context.scale(-1, 1);
+            }
+            
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            
+            // Convert to data URL
+            const photoData = canvas.toDataURL('image/png');
+            
+            // Add to gallery
+            addToGallery(photoData, 'photo');
+            
+            // Visual feedback
+            quickCaptureBtn.style.background = '#4caf50';
+            setTimeout(() => {
+                quickCaptureBtn.style.background = '';
+            }, 200);
+            
+            showStatus('Photo captured!', 'success');
+        }
+        
+        function startRecording() {
+            if (!mediaStream) {
+                showStatus('Camera not available. Please grant camera access first.', 'error');
+                return;
+            }
+            
+            if (isRecording) return;
+            
+            try {
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(mediaStream, {
+                    mimeType: 'video/webm;codecs=vp9,opus'
+                });
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+                
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const videoUrl = URL.createObjectURL(blob);
+                    addToGallery(videoUrl, 'video');
+                    
+                    // Reset recording state
+                    isRecording = false;
+                    recordingSeconds = 0;
+                    clearInterval(recordingTimer);
+                    
+                    // Update UI
+                    startRecordBtn.style.display = 'inline-block';
+                    stopRecordBtn.style.display = 'none';
+                    recordingTimerDiv.style.display = 'none';
+                    quickCaptureBtn.classList.remove('recording');
+                    
+                    showStatus('Video recording saved!', 'success');
+                };
+                
+                mediaRecorder.start(1000); // Collect data every second
+                isRecording = true;
+                
+                // Start timer
+                recordingTimer = setInterval(() => {
+                    recordingSeconds++;
+                    const minutes = Math.floor(recordingSeconds / 60);
+                    const seconds = recordingSeconds % 60;
+                    timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    // Stop after 5 minutes (safety limit)
+                    if (recordingSeconds >= 300) {
+                        stopRecording();
+                        showStatus('Recording stopped automatically after 5 minutes (safety limit)', 'info');
+                    }
+                }, 1000);
+                
+                // Update UI
+                startRecordBtn.style.display = 'none';
+                stopRecordBtn.style.display = 'inline-block';
+                recordingTimerDiv.style.display = 'block';
+                quickCaptureBtn.classList.add('recording');
+                
+                showStatus('Recording started...', 'info');
+                
+            } catch (error) {
+                console.error('Error starting recording:', error);
+                showStatus('Error starting recording: ' + error.message, 'error');
+            }
+        }
+        
+        function stopRecording() {
+            if (!mediaRecorder || !isRecording) return;
+            
+            mediaRecorder.stop();
+        }
+        
+        // ========== GALLERY MANAGEMENT ==========
+        function addToGallery(data, type) {
+            const mediaId = 'media_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            const mediaItem = {
+                id: mediaId,
+                data: data,
+                type: type,
+                timestamp: new Date().toISOString(),
+                filename: `${type}_${new Date().toISOString().replace(/[:.]/g, '-')}.${type === 'photo' ? 'png' : 'webm'}`,
+                uploaded: false,
+                selected: true
+            };
+            
+            userMedia.push(mediaItem);
+            updateLocalGallery();
+            updateUploadQueue();
+            
+            // Show upload section if not already visible
+            if (userMedia.length === 1) {
+                uploadSection.style.display = 'block';
+            }
+        }
+        
+        function updateLocalGallery() {
+            localGallery.innerHTML = '';
+            
+            userMedia.forEach((media, index) => {
+                const item = document.createElement('div');
+                item.className = 'preview-item';
+                item.dataset.index = index;
+                
+                if (media.type === 'photo') {
+                    item.innerHTML = `
+                        <img src="${media.data}" alt="Photo ${index + 1}" onclick="viewMedia(${index})">
+                        <button class="delete-btn" onclick="deleteMedia(${index})">×</button>
+                    `;
+                } else {
+                    item.innerHTML = `
+                        <video src="${media.data}" onclick="viewMedia(${index})"></video>
+                        <button class="delete-btn" onclick="deleteMedia(${index})">×</button>
+                    `;
+                }
+                
+                localGallery.appendChild(item);
+            });
+        }
+        
+        function updateUploadQueue() {
+            uploadQueue.innerHTML = '';
+            
+            userMedia.forEach((media, index) => {
+                const div = document.createElement('div');
+                div.style.cssText = 'margin: 10px 0; padding: 10px; background: white; border-radius: 5px; border: 1px solid #ddd;';
+                
+                div.innerHTML = `
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" class="upload-checkbox" data-index="${index}" ${media.selected ? 'checked' : ''} 
+                               onchange="toggleMediaSelection(${index})" ${media.uploaded ? 'disabled' : ''}>
+                        <span style="flex-grow: 1;">
+                            ${media.type === 'photo' ? '📸' : '🎥'} 
+                            ${media.type === 'photo' ? 'Photo' : 'Video'} ${index + 1}
+                            <small style="color: #666; margin-left: 10px;">
+                                (${new Date(media.timestamp).toLocaleTimeString()})
+                            </small>
+                            ${media.uploaded ? '<span style="color: #4caf50; margin-left: 10px;">✅ Uploaded</span>' : ''}
+                        </span>
+                        <button onclick="viewMedia(${index})" style="background: #2196f3; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                            👁️ Preview
+                        </button>
+                    </label>
+                `;
+                
+                uploadQueue.appendChild(div);
+            });
+        }
+        
+        function deleteMedia(index) {
+            if (confirm('Delete this media from your local gallery?')) {
+                // Revoke object URL to free memory
+                if (userMedia[index].type === 'video') {
+                    URL.revokeObjectURL(userMedia[index].data);
+                }
+                
+                userMedia.splice(index, 1);
+                updateLocalGallery();
+                updateUploadQueue();
+                
+                if (userMedia.length === 0) {
+                    uploadSection.style.display = 'none';
+                }
+                
+                showStatus('Media deleted from local gallery', 'info');
+            }
+        }
+        
+        function clearLocalGallery() {
+            if (userMedia.length === 0) return;
+            
+            if (confirm('Clear ALL media from your local gallery? This cannot be undone.')) {
+                // Revoke all object URLs
+                userMedia.forEach(media => {
+                    if (media.type === 'video') {
+                        URL.revokeObjectURL(media.data);
+                    }
+                });
+                
+                userMedia = [];
+                updateLocalGallery();
+                updateUploadQueue();
+                uploadSection.style.display = 'none';
+                
+                showStatus('All local media cleared', 'info');
+            }
+        }
+        
+        function toggleMediaSelection(index) {
+            userMedia[index].selected = !userMedia[index].selected;
+            updateUploadQueue();
+        }
+        
+        function selectAllMedia() {
+            const anyUnselected = userMedia.some(media => !media.selected && !media.uploaded);
+            
+            userMedia.forEach(media => {
+                if (!media.uploaded) {
+                    media.selected = anyUnselected;
+                }
+            });
+            
+            updateUploadQueue();
+            showStatus(anyUnselected ? 'All media selected' : 'Selection cleared', 'info');
+        }
+        
+        // ========== MEDIA VIEWING ==========
+        function viewMedia(index) {
+            const media = userMedia[index];
+            const modal = document.getElementById('mediaModal');
+            const modalMedia = document.getElementById('modalMedia');
+            
+            if (media.type === 'photo') {
+                modalMedia.innerHTML = `<img src="${media.data}" class="modal-media" alt="Full size view">`;
+            } else {
+                modalMedia.innerHTML = `<video src="${media.data}" class="modal-media" controls autoplay></video>`;
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('mediaModal').style.display = 'none';
+            document.getElementById('modalMedia').innerHTML = '';
+        }
+        
+        // ========== UPLOAD FUNCTIONS ==========
+        async function uploadSelectedMedia() {
+            const selectedMedia = userMedia.filter(media => media.selected && !media.uploaded);
+            
+            if (selectedMedia.length === 0) {
+                showStatus('Please select media to upload first', 'error');
+                return;
+            }
+            
+            if (!confirm(`Upload ${selectedMedia.length} file(s) to the teacher for evaluation?\n\nThis will send your media to the project server.`)) {
+                return;
+            }
+            
+            // Show progress bar
+            uploadProgressBar.style.display = 'block';
+            uploadProgressFill.style.width = '0%';
+            
+            let uploadedCount = 0;
+            let errors = [];
+            
+            for (let i = 0; i < selectedMedia.length; i++) {
+                const media = selectedMedia[i];
+                
+                try {
+                    // Update progress
+                    const progress = ((i + 1) / selectedMedia.length) * 100;
+                    uploadProgressFill.style.width = `${progress}%`;
+                    
+                    // Prepare form data
+                    const formData = new FormData();
+                    
+                    // Convert data URL to blob if needed
+                    let blob;
+                    if (media.data.startsWith('data:')) {
+                        // Data URL (photo)
+                        const response = await fetch(media.data);
+                        blob = await response.blob();
+                    } else {
+                        // Object URL (video)
+                        const response = await fetch(media.data);
+                        blob = await response.blob();
+                    }
+                    
+                    // Add file to form data
+                    formData.append('media', blob, media.filename);
+                    formData.append('sessionId', currentSessionId);
+                    formData.append('userId', 'student_' + currentSessionId);
+                    formData.append('consent', 'true');
+                    formData.append('purpose', 'school_project_evaluation');
+                    
+                    // Upload to server
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        media.uploaded = true;
+                        uploadedCount++;
+                        
+                        showStatus(`Uploaded ${i + 1}/${selectedMedia.length}: ${media.filename}`, 'success');
+                    } else {
+                        errors.push(`${media.filename}: ${result.message || result.error}`);
+                    }
+                    
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    errors.push(`${media.filename}: ${error.message}`);
+                }
+                
+                // Small delay between uploads
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            
+            // Update UI
+            updateUploadQueue();
+            uploadProgressBar.style.display = 'none';
+            
+            // Show final status
+            if (errors.length === 0) {
+                showStatus(`✅ Successfully uploaded ${uploadedCount} file(s) to the teacher!`, 'success');
+                
+                // Option to clear uploaded files
+                if (confirm('Upload complete! Would you like to clear uploaded files from your local gallery?')) {
+                    userMedia = userMedia.filter(media => !media.uploaded);
+                    updateLocalGallery();
+                    updateUploadQueue();
+                    
+                    if (userMedia.length === 0) {
+                        uploadSection.style.display = 'none';
+                    }
+                }
+                
+            } else {
+                let errorMessage = `Uploaded ${uploadedCount} file(s), ${errors.length} failed:\n`;
+                errorMessage += errors.join('\n');
+                showStatus(errorMessage, 'error');
+            }
+        }
+        
+        // ========== UTILITY FUNCTIONS ==========
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message status-${type}`;
+            statusMessage.style.display = 'block';
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        function showConsentAgain() {
+            if (confirm('Return to consent information? Your current media will be preserved.')) {
+                document.getElementById('step3').style.display = 'none';
+                document.getElementById('step2').style.display = 'block';
+            }
+        }
+        
+        function resetToStart() {
+            if (userMedia.length > 0 && !confirm('Return to start? Your unsaved media will be lost.')) {
+                return;
+            }
+            
+            // Stop camera
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            
+            // Clear gallery
+            userMedia.forEach(media => {
+                if (media.type === 'video') {
+                    URL.revokeObjectURL(media.data);
+                }
+            });
+            userMedia = [];
+            
+            // Reset UI
+            videoElement.srcObject = null;
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+            uploadSection.style.display = 'none';
+            statusMessage.style.display = 'none';
+            
+            // Reset consent checkbox
+            document.getElementById('agreeConsent').checked = false;
+            document.getElementById('startCameraBtn').disabled = true;
+        }
+        
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up modal close on click outside
+            document.getElementById('mediaModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('mediaModal')) {
+                    closeModal();
+                }
+            });
+            
+            // Initial setup
+            console.log('Student interface loaded');
+            showStatus('Welcome! Please read the consent information carefully.', 'info');
+        });
+        
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            // Stop camera
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            
+            // Clean up object URLs
+            userMedia.forEach(media => {
+                if (media.type === 'video') {
+                    URL.revokeObjectURL(media.data);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
